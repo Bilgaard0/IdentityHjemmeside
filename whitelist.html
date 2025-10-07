@@ -305,7 +305,7 @@
 
         .back-button {
             position: fixed;
-            top: 20px;
+            top: 80px;
             left: 20px;
             display: inline-flex;
             align-items: center;
@@ -334,42 +334,74 @@
             fill: currentColor;
         }
 
-        .status-banner {
-            background: linear-gradient(135deg, rgba(216, 18, 31, 0.1), rgba(255, 37, 56, 0.1));
+        /* Popup Modal */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            backdrop-filter: blur(5px);
+        }
+
+        .popup-modal {
+            background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 50%, #1a1a1a 100%);
             border: 2px solid #d8121f;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 30px;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
             text-align: center;
+            position: relative;
+            animation: popupSlideIn 0.3s ease-out;
         }
 
-        .status-banner.open {
-            border-color: #00ff00;
-            background: linear-gradient(135deg, rgba(0, 255, 0, 0.1), rgba(0, 200, 0, 0.1));
+        @keyframes popupSlideIn {
+            from {
+                transform: scale(0.7) translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
         }
 
-        .status-banner.closed {
-            border-color: #ff0000;
-            background: linear-gradient(135deg, rgba(255, 0, 0, 0.1), rgba(200, 0, 0, 0.1));
-        }
-
-        .status-text {
-            font-size: 1.2rem;
+        .popup-title {
+            font-size: 1.8rem;
             font-weight: bold;
-            margin-bottom: 10px;
+            color: #d8121f;
+            margin-bottom: 20px;
         }
 
-        .status-text.open {
-            color: #00ff00;
-        }
-
-        .status-text.closed {
-            color: #ff0000;
-        }
-
-        .status-description {
+        .popup-message {
+            font-size: 1.1rem;
             color: #cccccc;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .popup-close {
+            background: transparent;
+            border: 2px solid #d8121f;
+            color: #d8121f;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
             font-size: 1rem;
+        }
+
+        .popup-close:hover {
+            background: #d8121f;
+            color: white;
+            transform: translateY(-2px);
         }
 
         /* Mouse Trail Effect */
@@ -483,7 +515,9 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
-            <a href="index.html" class="nav-logo">Identity Roleplay</a>
+            <a href="index.html" class="nav-logo">
+                <img src="logo.png" alt="Identity Roleplay" style="height: 40px; width: auto;">
+            </a>
             <div class="nav-links">
                 <a href="index.html" class="nav-link">Hjem</a>
                 <a href="ansoegninger.html" class="nav-link">Ansøgninger</a>
@@ -500,76 +534,15 @@
         </p>
 
         <div class="whitelist-section">
-            <!-- Status Banner -->
-            <div class="status-banner open" id="statusBanner">
-                <div class="status-text open" id="statusText">🟢 WHITELIST ANSØGNINGER ER ÅBNE</div>
-                <div class="status-description" id="statusDescription">
-                    Vi accepterer i øjeblikket nye ansøgninger. Gennemsnitlig behandlingstid: 2-5 arbejdsdage.
-                </div>
-            </div>
-
             <div class="whitelist-card">
                 <h2 class="whitelist-title">Ansøg Om Whitelist Adgang</h2>
                 
                 <div class="whitelist-description">
                     <p>Identity Roleplay er en seriøs roleplay server, hvor kvalitet og realisme står i højsædet. Vi søger dedikerede spillere, der ønsker at bidrage til en autentisk og engagerende roleplay-oplevelse.</p>
-                    
-                    <p>Vores whitelist-system sikrer, at kun spillere med forståelse for roleplay-regler og høj kvalitet får adgang til serveren. Dette skaber et bedre miljø for alle.</p>
-                </div>
-
-                <div class="requirements-section">
-                    <h3 class="requirements-title">Krav for Whitelist</h3>
-                    <div class="requirements-grid">
-                        <div class="requirement-item">
-                            <h4>Alder</h4>
-                            <p>Minimum 16 år gammel. Ansøgere under 18 skal have forældresamtykke.</p>
-                        </div>
-                        <div class="requirement-item">
-                            <h4>Roleplay Erfaring</h4>
-                            <p>Tidligere erfaring med roleplay anbefales, men ikke et krav. Vilje til at lære er vigtigst.</p>
-                        </div>
-                        <div class="requirement-item">
-                            <h4>Dansk Sprog</h4>
-                            <p>Flydende dansk både skriftligt og muntligt. Gode kommunikationsevner er essentielle.</p>
-                        </div>
-                        <div class="requirement-item">
-                            <h4>Discord</h4>
-                            <p>Aktiv Discord-konto og medlemskab af vores Discord server er påkrævet.</p>
-                        </div>
-                        <div class="requirement-item">
-                            <h4>Tidsforbrug</h4>
-                            <p>Forventning om minimum 10 timer spil om ugen for at opretholde karakterudvikling.</p>
-                        </div>
-                        <div class="requirement-item">
-                            <h4>Regelforståelse</h4>
-                            <p>Grundig læsning og forståelse af alle server-regler før ansøgning.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="info-section">
-                    <h3 class="info-title">Ansøgningsproces</h3>
-                    <div class="info-text">
-                        <p><strong>1. Udfyld ansøgningen:</strong> Klik på knappen nedenfor og udfyld den detaljerede ansøgningsformular.</p>
-                        <p><strong>2. Interview:</strong> Hvis din ansøgning bliver godkendt, vil du blive kontaktet til et kort interview på Discord.</p>
-                        <p><strong>3. Testperiode:</strong> Nye spillere gennemgår en 7-dages testperiode med mentoring.</p>
-                        <p><strong>4. Fuld adgang:</strong> Efter succesfuld gennemførelse får du fuld adgang til alle server-features.</p>
-                    </div>
-                </div>
-
-                <div class="info-section">
-                    <h3 class="info-title">Hvad Forventer Vi?</h3>
-                    <div class="info-text">
-                        <p>• <strong>Respekt:</strong> Respekter andre spillere og staff-medlemmer til enhver tid.</p>
-                        <p>• <strong>Realisme:</strong> Hold dig til realisme og undgå "gaming" af systemet.</p>
-                        <p>• <strong>Karakterudvikling:</strong> Byg dybde og konsistens i din karakter over tid.</p>
-                        <p>• <strong>Community:</strong> Bidrag positivt til community og hjælp nye spillere.</p>
-                        <p>• <strong>Regler:</strong> Følg alle server-regler og accepter konsekvenser ved overtrædelser.</p>
-                    </div>
                 </div>
 
                 <div style="text-align: center;">
-                    <a href="https://forms.gle/WHITELIST_APPLICATION_LINK" target="_blank" class="apply-button">
+                    <a href="#" id="whitelistButton" class="apply-button">
                         <svg class="apply-icon" viewBox="0 0 24 24">
                             <path d="M14 3V5H17.59L7.76 14.83L9.17 16.24L19 6.41V10H21V3M19 19H5V5H12V3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V12H19V19Z"/>
                         </svg>
@@ -580,33 +553,55 @@
         </div>
     </div>
 
+    <!-- Popup Modal -->
+    <div class="popup-overlay" id="popupOverlay">
+        <div class="popup-modal">
+            <h3 class="popup-title">Ansøgninger Lukket</h3>
+            <p class="popup-message">
+                Vi modtager ikke whitelist ansøgninger lige nu. 
+                Følg med på vores Discord for opdateringer om hvornår ansøgninger åbner igen.
+            </p>
+            <button class="popup-close" onclick="closePopup()">Forstået</button>
+        </div>
+    </div>
+
     <script>
         // Whitelist Status Control (Easily changeable)
-        const WHITELIST_OPEN = true; // Ænder til false når whitelist er lukket
+        const WHITELIST_OPEN = false; // Ænder til true når whitelist er åben
         
-        function updateWhitelistStatus() {
-            const statusBanner = document.getElementById('statusBanner');
-            const statusText = document.getElementById('statusText');
-            const statusDescription = document.getElementById('statusDescription');
-            const applyButton = document.querySelector('.apply-button');
-            
-            if (WHITELIST_OPEN) {
-                statusBanner.className = 'status-banner open';
-                statusText.className = 'status-text open';
-                statusText.textContent = '🟢 WHITELIST ANSØGNINGER ER ÅBNE';
-                statusDescription.textContent = 'Vi accepterer i øjeblikket nye ansøgninger. Gennemsnitlig behandlingstid: 2-5 arbejdsdage.';
-                applyButton.style.display = 'inline-flex';
-            } else {
-                statusBanner.className = 'status-banner closed';
-                statusText.className = 'status-text closed';
-                statusText.textContent = '🔴 WHITELIST ANSØGNINGER ER LUKKET';
-                statusDescription.textContent = 'Vi accepterer ikke nye ansøgninger i øjeblikket. Følg med på Discord for opdateringer.';
-                applyButton.style.display = 'none';
-            }
+        function showPopup() {
+            document.getElementById('popupOverlay').style.display = 'flex';
         }
         
-        // Initialize whitelist status
-        updateWhitelistStatus();
+        function closePopup() {
+            document.getElementById('popupOverlay').style.display = 'none';
+        }
+        
+        function handleWhitelistClick(e) {
+            if (!WHITELIST_OPEN) {
+                e.preventDefault();
+                showPopup();
+            }
+            // Hvis WHITELIST_OPEN er true, åbner linket normalt
+        }
+        
+        // Tilføj event listener til whitelist knappen
+        document.addEventListener('DOMContentLoaded', function() {
+            const whitelistButton = document.getElementById('whitelistButton');
+            if (WHITELIST_OPEN) {
+                whitelistButton.href = 'https://forms.gle/WHITELIST_APPLICATION_LINK';
+                whitelistButton.target = '_blank';
+            } else {
+                whitelistButton.addEventListener('click', handleWhitelistClick);
+            }
+        });
+        
+        // Luk popup ved klik udenfor
+        document.getElementById('popupOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePopup();
+            }
+        });
 
         // Mouse Trail Effect
         const trails = [];
