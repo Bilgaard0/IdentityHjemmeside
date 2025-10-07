@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Identity Roleplay - Ansøgninger</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #141414 0%, #0f0f0f 50%, #0c0c0c 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        .background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .background::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(216, 18, 31, 0.05) 0%, transparent 70%);
+            animation: backgroundShift 8s ease-in-out infinite;
+        }
+
+        @keyframes backgroundShift {
+            0%, 100% {
+                transform: translateX(-50px);
+            }
+            50% {
+                transform: translateX(50px);
+            }
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(15, 15, 15, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            z-index: 1000;
+            border-bottom: 2px solid rgba(216, 18, 31, 0.3);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #d8121f;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-link {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 8px 15px;
+            border-radius: 20px;
+        }
+
+        .nav-link:hover {
+            color: #d8121f;
+            background: rgba(216, 18, 31, 0.1);
+        }
+
+        .nav-link.active {
+            color: #d8121f;
+            background: rgba(216, 18, 31, 0.2);
+        }
+
+        /* Main Content */
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 100px 20px 20px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-title {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #ffffff, #d8121f, #ffffff);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 4s ease-in-out infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        .page-subtitle {
+            font-size: 1.5rem;
+            color: #cccccc;
+            margin-bottom: 50px;
+            max-width: 800px;
+            line-height: 1.6;
+        }
+
+        .applications-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            width: 100%;
+            margin-bottom: 50px;
+        }
+
+        .application-card {
+            background: rgba(26, 26, 26, 0.8);
+            border: 2px solid rgba(216, 18, 31, 0.3);
+            border-radius: 20px;
+            padding: 40px 30px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .application-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #d8121f, #ff2538);
+        }
+
+        .application-card:hover {
+            border-color: #d8121f;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(216, 18, 31, 0.3);
+        }
+
+        .card-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #d8121f;
+            margin-bottom: 15px;
+        }
+
+        .card-description {
+            font-size: 1.1rem;
+            color: #cccccc;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .card-requirements {
+            background: rgba(15, 15, 15, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 4px solid #d8121f;
+        }
+
+        .requirements-title {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #d8121f;
+            margin-bottom: 10px;
+        }
+
+        .requirements-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .requirements-list li {
+            color: #cccccc;
+            margin-bottom: 5px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .requirements-list li::before {
+            content: '•';
+            color: #d8121f;
+            position: absolute;
+            left: 0;
+        }
+
+        .apply-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 30px;
+            background: transparent;
+            color: #d8121f;
+            text-decoration: none;
+            border-radius: 50px;
+            border: 2px solid #d8121f;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .apply-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background: #d8121f;
+            transition: width 0.4s ease;
+            z-index: -1;
+        }
+
+        .apply-button:hover::before {
+            width: 100%;
+        }
+
+        .apply-button:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(216, 18, 31, 0.4);
+        }
+
+        .apply-icon {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            background: rgba(15, 15, 15, 0.9);
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 25px;
+            border: 2px solid rgba(216, 18, 31, 0.3);
+            font-weight: bold;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .back-button:hover {
+            border-color: #d8121f;
+            color: #d8121f;
+            transform: translateX(-5px);
+        }
+
+        .back-icon {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        /* Mouse Trail Effect */
+        .mouse-trail {
+            position: fixed;
+            width: 2px;
+            height: 20px;
+            background: linear-gradient(to bottom, #d8121f, transparent);
+            pointer-events: none;
+            z-index: 9999;
+            border-radius: 1px;
+            box-shadow: 0 0 10px #d8121f, 0 0 20px #d8121f;
+            opacity: 0;
+            transition: opacity 0.1s ease;
+        }
+
+        .mouse-trail.active {
+            opacity: 1;
+        }
+
+        /* Click Effect */
+        .click-effect {
+            position: fixed;
+            width: 30px;
+            height: 30px;
+            border: 2px solid #d8121f;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            animation: clickRipple 0.6s ease-out;
+        }
+
+        @keyframes clickRipple {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+                box-shadow: 0 0 0 0 rgba(216, 18, 31, 0.7);
+            }
+            70% {
+                transform: scale(1);
+                opacity: 0.7;
+                box-shadow: 0 0 0 15px rgba(216, 18, 31, 0);
+            }
+            100% {
+                transform: scale(1.2);
+                opacity: 0;
+                box-shadow: 0 0 0 25px rgba(216, 18, 31, 0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .page-title {
+                font-size: 2.5rem;
+            }
+
+            .page-subtitle {
+                font-size: 1.2rem;
+                padding: 0 20px;
+            }
+
+            .applications-grid {
+                grid-template-columns: 1fr;
+                padding: 0 20px;
+            }
+
+            .application-card {
+                padding: 30px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .page-subtitle {
+                font-size: 1rem;
+            }
+
+            .card-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background"></div>
+
+    <!-- Back Button -->
+    <a href="index.html" class="back-button">
+        <svg class="back-icon" viewBox="0 0 24 24">
+            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.42-1.41L7.83 13H20v-2z"/>
+        </svg>
+        Tilbage
+    </a>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">Identity Roleplay</a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Hjem</a>
+                <a href="ansoegninger.html" class="nav-link active">Ansøgninger</a>
+                <a href="whitelist.html" class="nav-link">Whitelist</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <h1 class="page-title">Ansøgninger</h1>
+        <p class="page-subtitle">
+            Vil du være en del af vores server-team? Her kan du ansøge til forskellige stillinger. 
+            Læs kravene grundigt og følg ansøgningsprocessen nøje.
+        </p>
+
+        <div class="applications-grid">
+            <!-- Staff Application -->
+            <div class="application-card">
+                <h2 class="card-title">Staff Ansøgning</h2>
+                <p class="card-description">
+                    Ansøg om at blive en del af vores staff-team og hjælp med at moderere serveren og skabe en god oplevelse for alle spillere.
+                </p>
+                <div class="card-requirements">
+                    <div class="requirements-title">Krav:</div>
+                    <ul class="requirements-list">
+                        <li>Minimum 16 år gammel</li>
+                        <li>Aktiv på Discord og serveren</li>
+                        <li>God kommunikation på dansk</li>
+                        <li>Tidligere erfaring med RP (foretrukket)</li>
+                        <li>Tilgængelig mindst 10 timer om ugen</li>
+                    </ul>
+                </div>
+                <a href="https://forms.gle/STAFF_APPLICATION_LINK" target="_blank" class="apply-button">
+                    <svg class="apply-icon" viewBox="0 0 24 24">
+                        <path d="M14 3V5H17.59L7.76 14.83L9.17 16.24L19 6.41V10H21V3M19 19H5V5H12V3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V12H19V19Z"/>
+                    </svg>
+                    Ansøg Som Staff
+                </a>
+            </div>
+
+            <!-- Developer Application -->
+            <div class="application-card">
+                <h2 class="card-title">Developer Ansøgning</h2>
+                <p class="card-description">
+                    Er du en erfaren scripter eller udvikler? Hjælp os med at udvikle nye features og forbedre server-oplevelsen.
+                </p>
+                <div class="card-requirements">
+                    <div class="requirements-title">Krav:</div>
+                    <ul class="requirements-list">
+                        <li>Erfaring med Lua scripting</li>
+                        <li>Kendskab til FiveM framework</li>
+                        <li>Portfolio af tidligere arbejde</li>
+                        <li>Minimum 18 år gammel</li>
+                        <li>Fleksible arbejdstider</li>
+                    </ul>
+                </div>
+                <a href="https://forms.gle/DEVELOPER_APPLICATION_LINK" target="_blank" class="apply-button">
+                    <svg class="apply-icon" viewBox="0 0 24 24">
+                        <path d="M14 3V5H17.59L7.76 14.83L9.17 16.24L19 6.41V10H21V3M19 19H5V5H12V3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V12H19V19Z"/>
+                    </svg>
+                    Ansøg Som Developer
+                </a>
+            </div>
+
+            <!-- Event Coordinator Application -->
+            <div class="application-card">
+                <h2 class="card-title">Event Koordinator</h2>
+                <p class="card-description">
+                    Planlæg og udfør spændende events på serveren. Skab uforglemmelige oplevelser for vores community.
+                </p>
+                <div class="card-requirements">
+                    <div class="requirements-title">Krav:</div>
+                    <ul class="requirements-list">
+                        <li>Kreativ og organiseret</li>
+                        <li>Erfaring med event-planlægning</li>
+                        <li>God til at arbejde i team</li>
+                        <li>Minimum 17 år gammel</li>
+                        <li>Aktiv i community</li>
+                    </ul>
+                </div>
+                <a href="https://forms.gle/EVENT_COORDINATOR_LINK" target="_blank" class="apply-button">
+                    <svg class="apply-icon" viewBox="0 0 24 24">
+                        <path d="M14 3V5H17.59L7.76 14.83L9.17 16.24L19 6.41V10H21V3M19 19H5V5H12V3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V12H19V19Z"/>
+                    </svg>
+                    Ansøg Som Event Koordinator
+                </a>
+            </div>
+
+            <!-- Community Manager Application -->
+            <div class="application-card">
+                <h2 class="card-title">Community Manager</h2>
+                <p class="card-description">
+                    Administrer vores sociale medier og Discord server. Byg broer mellem community og staff-teamet.
+                </p>
+                <div class="card-requirements">
+                    <div class="requirements-title">Krav:</div>
+                    <ul class="requirements-list">
+                        <li>Erfaring med sociale medier</li>
+                        <li>Udmærket kommunikation</li>
+                        <li>Kendskab til Discord administration</li>
+                        <li>Minimum 18 år gammel</li>
+                        <li>Daglig tilgængelighed</li>
+                    </ul>
+                </div>
+                <a href="https://forms.gle/COMMUNITY_MANAGER_LINK" target="_blank" class="apply-button">
+                    <svg class="apply-icon" viewBox="0 0 24 24">
+                        <path d="M14 3V5H17.59L7.76 14.83L9.17 16.24L19 6.41V10H21V3M19 19H5V5H12V3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V12H19V19Z"/>
+                    </svg>
+                    Ansøg Som Community Manager
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mouse Trail Effect
+        const trails = [];
+        const maxTrails = 15;
+        let mouseX = 0;
+        let mouseY = 0;
+        let isMouseMoving = false;
+        let mouseTimeout;
+
+        // Create trail elements
+        for (let i = 0; i < maxTrails; i++) {
+            const trail = document.createElement('div');
+            trail.className = 'mouse-trail';
+            document.body.appendChild(trail);
+            trails.push({
+                element: trail,
+                x: 0,
+                y: 0,
+                alpha: 0
+            });
+        }
+
+        // Mouse move handler
+        document.addEventListener('mousemove', function(e) {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            isMouseMoving = true;
+            
+            clearTimeout(mouseTimeout);
+            mouseTimeout = setTimeout(() => {
+                isMouseMoving = false;
+            }, 100);
+        });
+
+        // Animate trails
+        function animateTrails() {
+            for (let i = trails.length - 1; i > 0; i--) {
+                trails[i].x = trails[i - 1].x;
+                trails[i].y = trails[i - 1].y;
+            }
+            
+            trails[0].x = mouseX;
+            trails[0].y = mouseY;
+            
+            trails.forEach((trail, index) => {
+                const alpha = isMouseMoving ? (1 - index / maxTrails) * 0.8 : 0;
+                trail.element.style.left = trail.x + 'px';
+                trail.element.style.top = trail.y + 'px';
+                trail.element.style.opacity = alpha;
+                
+                if (alpha > 0) {
+                    trail.element.classList.add('active');
+                } else {
+                    trail.element.classList.remove('active');
+                }
+            });
+            
+            requestAnimationFrame(animateTrails);
+        }
+        
+        animateTrails();
+
+        // Click Effect
+        document.addEventListener('click', function(e) {
+            const clickEffect = document.createElement('div');
+            clickEffect.className = 'click-effect';
+            clickEffect.style.left = (e.clientX - 15) + 'px';
+            clickEffect.style.top = (e.clientY - 15) + 'px';
+            
+            document.body.appendChild(clickEffect);
+            
+            setTimeout(() => {
+                document.body.removeChild(clickEffect);
+            }, 600);
+        });
+
+        // Right Click Effect
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            
+            const clickEffect = document.createElement('div');
+            clickEffect.className = 'click-effect';
+            clickEffect.style.left = (e.clientX - 15) + 'px';
+            clickEffect.style.top = (e.clientY - 15) + 'px';
+            
+            document.body.appendChild(clickEffect);
+            
+            setTimeout(() => {
+                document.body.removeChild(clickEffect);
+            }, 600);
+        });
+
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
