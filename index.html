@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coming Soon - FiveM Server</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #141414 0%, #0f0f0f 50%, #0c0c0c 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* Hide countdown and disable scrolling when SHOW_COUNTDOWN is false */
+        body.no-countdown {
+            overflow: hidden;
+        }
+        
+        body.no-countdown .big-countdown-section {
+            display: none;
+        }
+
+        /* Animated Background */
+        .background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .background::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(216, 18, 31, 0.05) 0%, transparent 70%);
+            animation: backgroundShift 8s ease-in-out infinite;
+        }
+
+        /* Mouse Trail Effect */
+        .mouse-trail {
+            position: fixed;
+            width: 2px;
+            height: 20px;
+            background: linear-gradient(to bottom, #d8121f, transparent);
+            pointer-events: none;
+            z-index: 9999;
+            border-radius: 1px;
+            box-shadow: 0 0 10px #d8121f, 0 0 20px #d8121f;
+            opacity: 0;
+            transition: opacity 0.1s ease;
+        }
+
+        .mouse-trail.active {
+            opacity: 1;
+        }
+
+        /* Click Effect */
+        .click-effect {
+            position: fixed;
+            width: 30px;
+            height: 30px;
+            border: 2px solid #d8121f;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            animation: clickRipple 0.6s ease-out;
+        }
+
+        @keyframes clickRipple {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+                box-shadow: 0 0 0 0 rgba(216, 18, 31, 0.7);
+            }
+            70% {
+                transform: scale(1);
+                opacity: 0.7;
+                box-shadow: 0 0 0 15px rgba(216, 18, 31, 0);
+            }
+            100% {
+                transform: scale(1.2);
+                opacity: 0;
+                box-shadow: 0 0 0 25px rgba(216, 18, 31, 0);
+            }
+        }
+
+        @keyframes backgroundShift {
+            0%, 100% {
+                transform: translateX(-50px);
+            }
+            50% {
+                transform: translateX(50px);
+            }
+        }
+
+        /* Main Content */
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo {
+            width: 350px;
+            height: 350px;
+            margin-bottom: 40px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.1));
+            animation: logoGlow 3s ease-in-out infinite;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        @keyframes logoGlow {
+            0%, 100% {
+                filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.1));
+            }
+            50% {
+                filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.3));
+            }
+        }
+
+        .title {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #ffffff, #d8121f, #ffffff);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 4s ease-in-out infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: #cccccc;
+            margin-bottom: 50px;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.5s forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .discord-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            padding: 18px 40px;
+            background: transparent;
+            color: #500070;
+            text-decoration: none;
+            border-radius: 50px;
+            border: 2px solid #500070;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: all 0.4s ease;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 1s forwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .discord-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background: #500070;
+            transition: width 0.4s ease;
+            z-index: -1;
+        }
+
+        .discord-button:hover::before {
+            width: 100%;
+        }
+
+        .discord-button:hover {
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(155, 89, 182, 0.4);
+        }
+
+        .discord-icon {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        .coming-soon {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1rem;
+            color: #666666;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 50%, #1a1a1a 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-logo {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 30px;
+            filter: drop-shadow(0 0 20px rgba(216, 18, 31, 0.5));
+            animation: loadingPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes loadingPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .progress-bar {
+            width: 300px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #d8121f, #ff2538);
+            width: 0%;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px #d8121f;
+        }
+
+        .loading-text {
+            color: #ffffff;
+            font-size: 1.1rem;
+            margin-top: 10px;
+        }
+
+        /* Server Status */
+        .server-status {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(15, 15, 15, 0.9);
+            padding: 15px 20px;
+            border-radius: 25px;
+            border: 2px solid;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .server-status.online {
+            border-color: #00ff00;
+            color: #00ff00;
+        }
+
+        .server-status.offline {
+            border-color: #ff0000;
+            color: #ff0000;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            animation: statusPulse 2s ease-in-out infinite;
+        }
+
+        .status-dot.online {
+            background: #00ff00;
+            box-shadow: 0 0 10px #00ff00;
+        }
+
+        .status-dot.offline {
+            background: #ff0000;
+            box-shadow: 0 0 10px #ff0000;
+        }
+
+        @keyframes statusPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Big Countdown Section */
+        .big-countdown-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            padding: 50px 20px;
+        }
+
+        .big-countdown-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(216, 18, 31, 0.05) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .countdown-container {
+            text-align: center;
+            z-index: 2;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1s ease-out;
+        }
+
+        .countdown-container.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .countdown-main-title {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 30px;
+            background: linear-gradient(45deg, #ffffff, #d8121f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(216, 18, 31, 0.3);
+        }
+
+        .countdown-display {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .countdown-item {
+            background: rgba(26, 26, 26, 0.8);
+            border: 2px solid rgba(216, 18, 31, 0.3);
+            border-radius: 20px;
+            padding: 30px 20px;
+            min-width: 120px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .countdown-item:hover {
+            border-color: #d8121f;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(216, 18, 31, 0.3);
+        }
+
+        .countdown-number {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #d8121f;
+            text-shadow: 0 0 20px rgba(216, 18, 31, 0.5);
+            display: block;
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+
+        .countdown-label {
+            font-size: 1.1rem;
+            color: #cccccc;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .countdown-subtitle {
+            font-size: 1.5rem;
+            color: #888888;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Typing Animation */
+        .typing-text {
+            overflow: hidden;
+            border-right: 3px solid #d8121f;
+            white-space: nowrap;
+            animation: typing 3s steps(40, end), blink-caret 0.75s step-end infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: #d8121f; }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .logo {
+                width: 280px;
+                height: 280px;
+                margin-bottom: 30px;
+            }
+
+            .subtitle {
+                font-size: 1.2rem;
+                margin-bottom: 40px;
+                padding: 0 20px;
+            }
+
+            .discord-button {
+                padding: 15px 30px;
+                font-size: 1.1rem;
+            }
+
+
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                width: 220px;
+                height: 220px;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <img src="logo.png" alt="Loading" class="loading-logo">
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="loading-text" id="loadingText">Indlæser...</div>
+    </div>
+
+    <!-- Server Status -->
+    <div class="server-status offline" id="serverStatus">
+        <div class="status-dot offline" id="statusDot"></div>
+        <span id="statusText">Server: Offline</span>
+    </div>
+
+    <div class="background">
+    </div>
+
+    <div class="main-container">
+        <img src="logo.png" alt="Server Logo" class="logo">
+        <p class="subtitle typing-text">Serveren er under udvikling - følg med på Discord</p>
+        <a href="#" class="discord-button">
+            <svg class="discord-icon" viewBox="0 0 24 24">
+                <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.029a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.029a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"/>
+            </svg>
+            Tilslut Discord
+        </a>
+        
+        <div class="coming-soon">Kommer snart...</div>
+    </div>
+
+    <!-- Big Countdown Section -->
+    <div class="big-countdown-section">
+        <div class="countdown-container">
+            <h2 class="countdown-main-title">Server Launch Countdown</h2>
+            <div class="countdown-display">
+                <div class="countdown-item">
+                    <span class="countdown-number" id="days">??</span>
+                    <span class="countdown-label">Dage</span>
+                </div>
+                <div class="countdown-item">
+                    <span class="countdown-number" id="hours">??</span>
+                    <span class="countdown-label">Timer</span>
+                </div>
+                <div class="countdown-item">
+                    <span class="countdown-number" id="minutes">??</span>
+                    <span class="countdown-label">Minutter</span>
+                </div>
+                <div class="countdown-item">
+                    <span class="countdown-number" id="seconds">??</span>
+                    <span class="countdown-label">Sekunder</span>
+                </div>
+            </div>
+            <p class="countdown-subtitle">
+                Serveren åbner officielt den 10. oktober 2025 kl. 15:00!<br>
+                Følg med på Discord for sidste nyt og opdateringer.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Loading Screen
+        let progress = 0;
+        const progressFill = document.getElementById('progressFill');
+        const loadingText = document.getElementById('loadingText');
+        const loadingScreen = document.getElementById('loadingScreen');
+        
+        const loadingMessages = [
+            'Indlæser...',
+            'Starter systemer...',
+            'Forbinder til servere...',
+            'Næsten færdig...',
+            'Velkommen!'
+        ];
+        
+        function updateProgress() {
+            progress += Math.random() * 20 + 5;
+            if (progress > 100) progress = 100;
+            
+            progressFill.style.width = progress + '%';
+            
+            const messageIndex = Math.floor((progress / 100) * (loadingMessages.length - 1));
+            loadingText.textContent = loadingMessages[messageIndex];
+            
+            if (progress < 100) {
+                setTimeout(updateProgress, 200 + Math.random() * 300);
+            } else {
+                setTimeout(() => {
+                    loadingScreen.classList.add('hidden');
+                }, 500);
+            }
+        }
+        
+        // Start loading animation
+        setTimeout(updateProgress, 500);
+        
+        // Server Status (Easily changeable)
+        const SERVER_IS_ONLINE = false; // Ænder til true når serveren er online
+        
+        // Countdown Control (Easily changeable)
+        const SHOW_COUNTDOWN = false; // Ænder til false for at skjule countdown og blokere scrolling
+        
+        function updateServerStatus() {
+            const serverStatus = document.getElementById('serverStatus');
+            const statusDot = document.getElementById('statusDot');
+            const statusText = document.getElementById('statusText');
+            
+            if (SERVER_IS_ONLINE) {
+                serverStatus.className = 'server-status online';
+                statusDot.className = 'status-dot online';
+                statusText.textContent = 'Server: Online';
+            } else {
+                serverStatus.className = 'server-status offline';
+                statusDot.className = 'status-dot offline';
+                statusText.textContent = 'Server: Offline';
+            }
+        }
+        
+        // Initialize server status
+        updateServerStatus();
+        
+        // Countdown Control Function
+        function initializeCountdown() {
+            const body = document.body;
+            const countdownSection = document.querySelector('.big-countdown-section');
+            
+            if (!SHOW_COUNTDOWN) {
+                // Skjul countdown og bloker scrolling
+                body.classList.add('no-countdown');
+                return; // Stop her hvis countdown er disabled
+            } else {
+                // Vis countdown og tillad scrolling
+                body.classList.remove('no-countdown');
+            }
+            
+            // Kun kør countdown funktionalitet hvis SHOW_COUNTDOWN er true
+            if (SHOW_COUNTDOWN) {
+                // Big Countdown Scroll Detection
+                function checkCountdownVisibility() {
+                    const countdownContainer = document.querySelector('.countdown-container');
+                    if (countdownContainer) {
+                        const rect = countdownContainer.getBoundingClientRect();
+                        const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+                        
+                        if (rect.top <= windowHeight * 0.7) {
+                            countdownContainer.classList.add('visible');
+                        }
+                    }
+                }
+
+                window.addEventListener('scroll', checkCountdownVisibility);
+                window.addEventListener('load', checkCountdownVisibility);
+                
+                // Start countdown timer
+                updateCountdown();
+                setInterval(updateCountdown, 1000);
+            }
+        }
+        
+        // Initialize countdown system
+        initializeCountdown();
+        
+        // Countdown Timer - Server åbner 10. oktober 2025 kl. 15:00
+        function updateCountdown() {
+            const launchDate = new Date('2025-10-10T15:00:00');
+            const now = new Date();
+            const timeDiff = launchDate - now;
+            
+            if (timeDiff > 0) {
+                const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+                
+                document.getElementById('days').textContent = days.toString().padStart(2, '0');
+                document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+                document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+                document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+            } else {
+                // Serveren er nu åben!
+                document.getElementById('days').textContent = '00';
+                document.getElementById('hours').textContent = '00';
+                document.getElementById('minutes').textContent = '00';
+                document.getElementById('seconds').textContent = '00';
+            }
+        }
+        
+        // Mouse Trail Effect
+        const trails = [];
+        const maxTrails = 15;
+        let mouseX = 0;
+        let mouseY = 0;
+        let isMouseMoving = false;
+        let mouseTimeout;
+
+        // Create trail elements
+        for (let i = 0; i < maxTrails; i++) {
+            const trail = document.createElement('div');
+            trail.className = 'mouse-trail';
+            document.body.appendChild(trail);
+            trails.push({
+                element: trail,
+                x: 0,
+                y: 0,
+                alpha: 0
+            });
+        }
+
+        // Mouse move handler
+        document.addEventListener('mousemove', function(e) {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            isMouseMoving = true;
+            
+            clearTimeout(mouseTimeout);
+            mouseTimeout = setTimeout(() => {
+                isMouseMoving = false;
+            }, 100);
+        });
+
+        // Animate trails
+        function animateTrails() {
+            for (let i = trails.length - 1; i > 0; i--) {
+                trails[i].x = trails[i - 1].x;
+                trails[i].y = trails[i - 1].y;
+            }
+            
+            trails[0].x = mouseX;
+            trails[0].y = mouseY;
+            
+            trails.forEach((trail, index) => {
+                const alpha = isMouseMoving ? (1 - index / maxTrails) * 0.8 : 0;
+                trail.element.style.left = trail.x + 'px';
+                trail.element.style.top = trail.y + 'px';
+                trail.element.style.opacity = alpha;
+                
+                if (alpha > 0) {
+                    trail.element.classList.add('active');
+                } else {
+                    trail.element.classList.remove('active');
+                }
+            });
+            
+            requestAnimationFrame(animateTrails);
+        }
+        
+        animateTrails();
+
+        // Right Click Effect
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            
+            const clickEffect = document.createElement('div');
+            clickEffect.className = 'click-effect';
+            clickEffect.style.left = (e.clientX - 15) + 'px';
+            clickEffect.style.top = (e.clientY - 15) + 'px';
+            
+            document.body.appendChild(clickEffect);
+            
+            setTimeout(() => {
+                document.body.removeChild(clickEffect);
+            }, 600);
+        });
+
+        // Logo click effect
+        document.querySelector('.logo').addEventListener('click', function() {
+            this.style.animation = 'none';
+            setTimeout(() => {
+                this.style.animation = 'logoGlow 3s ease-in-out infinite';
+            }, 100);
+        });
+
+        // Discord button click effect
+        document.querySelector('.discord-button').addEventListener('click', function(e) {
+            e.preventDefault();
+            // Åbner Discord serveren i en ny fane
+            window.open('https://discord.gg/zfngwA3BMk', '_blank');
+        });
+    </script>
+</body>
+</html>
